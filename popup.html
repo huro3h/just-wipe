@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <section class="block">
+        <h2>削除するもの</h2>
+        <label class="check">
+          <input type="checkbox" id="wipeHistory" />
+          <span>閲覧履歴</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="wipeDownloads" />
+          <span>ダウンロード履歴</span>
+        </label>
+      </section>
+
+      <section class="block">
+        <h2>削除する範囲（直近を残して、それ以前を削除）</h2>
+        <select id="period">
+          <option value="all">すべて削除</option>
+          <option value="hour">直近 1 時間を残す</option>
+          <option value="day">直近 24 時間を残す</option>
+          <option value="week">直近 7 日間を残す</option>
+          <option value="custom">カスタム（残す日数を指定）</option>
+        </select>
+
+        <div id="customRange" class="custom hidden">
+          <label>
+            <span>残す日数</span>
+            <span class="days-input">
+              <input type="number" id="customKeepDays" min="0" step="1" inputmode="numeric" />
+              <span class="unit">日</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <button id="wipeBtn" class="wipe">削除する</button>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+
+      <section class="block auto">
+        <label class="toggle">
+          <span>ブラウザ起動時に自動削除</span>
+          <input type="checkbox" id="autoOnStartup" />
+        </label>
+      </section>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
