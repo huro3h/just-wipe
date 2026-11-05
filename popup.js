@@ -12,6 +12,7 @@ applyToolbarIcon();
 const els = {
   wipeHistory: document.getElementById("wipeHistory"),
   wipeDownloads: document.getElementById("wipeDownloads"),
+  wipeCache: document.getElementById("wipeCache"),
   period: document.getElementById("period"),
   customRange: document.getElementById("customRange"),
   customKeepDays: document.getElementById("customKeepDays"),
@@ -31,7 +32,10 @@ function toggleCustom() {
 }
 
 function updateWipeButton() {
-  const nothingSelected = !els.wipeHistory.checked && !els.wipeDownloads.checked;
+  const nothingSelected =
+    !els.wipeHistory.checked &&
+    !els.wipeDownloads.checked &&
+    !els.wipeCache.checked;
   els.wipeBtn.disabled = nothingSelected;
 }
 
@@ -45,6 +49,7 @@ function readUI() {
   return {
     wipeHistory: els.wipeHistory.checked,
     wipeDownloads: els.wipeDownloads.checked,
+    wipeCache: els.wipeCache.checked,
     period: els.period.value,
     customKeepDays: parseKeepDays(els.customKeepDays.value),
     autoOnStartup: els.autoOnStartup.checked,
@@ -59,6 +64,7 @@ async function init() {
   const s = await getSettings();
   els.wipeHistory.checked = s.wipeHistory;
   els.wipeDownloads.checked = s.wipeDownloads;
+  els.wipeCache.checked = s.wipeCache;
   els.period.value = s.period;
   els.autoOnStartup.checked = s.autoOnStartup;
 
@@ -72,6 +78,7 @@ async function init() {
   [
     els.wipeHistory,
     els.wipeDownloads,
+    els.wipeCache,
     els.period,
     els.customKeepDays,
     els.autoOnStartup,
@@ -95,6 +102,7 @@ async function onWipe() {
     const parts = [];
     if (result.history) parts.push("閲覧履歴");
     if (result.downloads) parts.push("ダウンロード履歴");
+    if (result.cache) parts.push("キャッシュ");
     setStatus(`✓ ${parts.join("・")}を削除しました`);
   } catch (e) {
     setStatus(`エラー: ${e?.message ?? e}`, true);

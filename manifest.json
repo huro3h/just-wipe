@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Just Wipe",
-  "version": "1.0.0",
-  "description": "閲覧履歴とダウンロード履歴を削除",
+  "version": "1.1.0",
+  "description": "閲覧履歴・ダウンロード履歴・キャッシュを削除",
   "permissions": ["browsingData", "history", "downloads", "storage", "offscreen"],
   "action": {
     "default_title": "Just Wipe",

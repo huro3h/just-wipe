@@ -56,6 +56,12 @@ h2 {
   cursor: pointer;
 }
 
+.check .note {
+  margin-left: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
 .check input {
   width: 15px;
   height: 15px;

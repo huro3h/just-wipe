@@ -3,6 +3,7 @@
 export const DEFAULT_SETTINGS = {
   wipeHistory: true, // 閲覧履歴を削除する
   wipeDownloads: true, // ダウンロード履歴を削除する
+  wipeCache: false, // キャッシュを削除する（範囲に関係なくすべて）
   period: "all", // "all" | "hour" | "day" | "week" | "custom"
   customKeepDays: 30, // カスタム: 直近この日数を残し、それ以前を削除
   autoOnStartup: false, // ブラウザ起動時に自動削除
@@ -44,21 +45,23 @@ export function resolveRange(settings, now) {
 
 // 実際の削除を行う。削除対象・範囲は settings に従う。
 // 「before」より前の履歴を削除する（before が null ならすべて削除）。
-// 返り値: { history: bool, downloads: bool, before }
+// キャッシュは上限（before）を指定できないため、範囲に関係なくすべて削除する。
+// 返り値: { history: bool, downloads: bool, cache: bool, before }
 export async function wipe(settings, now) {
   const { before } = resolveRange(settings, now);
   const doHistory = !!settings.wipeHistory;
   const doDownloads = !!settings.wipeDownloads;
+  const doCache = !!settings.wipeCache;
 
-  if (!doHistory && !doDownloads) {
-    return { history: false, downloads: false, before };
+  if (!doHistory && !doDownloads && !doCache) {
+    return { history: false, downloads: false, cache: false, before };
   }
 
   if (before == null) {
     // すべて削除。browsingData で一括削除するのが最も確実。
     await chrome.browsingData.remove(
       { since: 0 },
-      { history: doHistory, downloads: doDownloads }
+      { history: doHistory, downloads: doDownloads, cache: doCache }
     );
   } else {
     // 「before より前」を削除。上限を指定できる個別 API を使う。
@@ -70,7 +73,11 @@ export async function wipe(settings, now) {
         startedBefore: new Date(before).toISOString(),
       });
     }
+    if (doCache) {
+      // browsingData は開始時刻（since）しか指定できないので、すべて削除する。
+      await chrome.browsingData.removeCache({ since: 0 });
+    }
   }
 
-  return { history: doHistory, downloads: doDownloads, before };
+  return { history: doHistory, downloads: doDownloads, cache: doCache, before };
 }

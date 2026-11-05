@@ -45,6 +45,9 @@ description: >-
   - `before == null`（＝「すべて削除」）→ `chrome.browsingData.remove({since:0}, …)` で一括。
   - `before` あり → `chrome.history.deleteRange` と `chrome.downloads.erase({startedBefore})` で
     境界より前を個別に削除。
+- **キャッシュ（`wipeCache`、初期値 OFF）は範囲に関係なく常にすべて削除**する。`browsingData` は
+  `since`（開始）しか指定できず「直近を残す」ができないため。`before` ありのときは
+  `chrome.browsingData.removeCache({since:0})` を別に呼ぶ。
 - カスタムの「残す日数」に `0` を指定すると `before = now`（実質すべて削除）になる。
 
 ## テーマ追従アイコン — 触る前に必読
